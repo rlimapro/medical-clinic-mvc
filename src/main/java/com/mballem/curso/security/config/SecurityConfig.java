@@ -20,22 +20,37 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+
+                // paginas publicas
                 .antMatchers("/webjars/**", "/css/**", "/js/**", "/image/**").permitAll()
                 .antMatchers("/", "/home").permitAll()
+
                 // acesso privado para admin
                 .antMatchers("/u/**").hasAuthority("ADMIN")
+
                 // acesso privado para medico
                 .antMatchers("/medicos/**").hasAuthority("MEDICO")
+
+                // outras paginas requerem autenticação
                 .anyRequest().authenticated()
+
+                // login
                 .and()
                 .formLogin()
                 .loginPage("/login")
                 .defaultSuccessUrl("/", true)
                 .failureUrl("/login-error")
                 .permitAll()
+
+                // logout
                 .and()
                 .logout()
-                .logoutSuccessUrl("/");
+                .logoutSuccessUrl("/")
+
+                // acesso negado
+                .and()
+                .exceptionHandling()
+                .accessDeniedPage("/acesso-negado");
     }
 
     @Override
