@@ -4,7 +4,7 @@ $(document).ready(function () {
     	searching: true,
     	order: [[ 1, "asc" ]],
     	lengthMenu: [5, 10],
-        processing: true,
+        processing: false,
         serverSide: true,
         responsive: true,
         ajax: {
