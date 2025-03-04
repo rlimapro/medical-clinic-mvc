@@ -4,7 +4,7 @@ $(document).ready(function() {
     var table = $('#table-usuarios').DataTable({
         searching : true,
         lengthMenu : [ 5, 10 ],
-        processing : true,
+        processing : false,
         serverSide : true,
         responsive : true,
         ajax : {
