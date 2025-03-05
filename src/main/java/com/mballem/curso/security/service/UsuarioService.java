@@ -28,6 +28,7 @@ public class UsuarioService implements UserDetailsService {
     @Autowired
     private Datatables datatable;
 
+    @Transactional(readOnly = true)
     public Usuario buscarPorEmail(String email) {
         return repository.findByEmail(email);
     }
@@ -67,7 +68,13 @@ public class UsuarioService implements UserDetailsService {
         repository.save(usuario);
     }
 
+    @Transactional(readOnly = true)
     public Usuario buscarPorId(Long id) {
         return repository.findById(id).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public Usuario buscarPorIdAndPerfis(Long usuarioId, Long[] perfisId) {
+        return repository.findByIdAndPerfis(usuarioId, perfisId);
     }
 }

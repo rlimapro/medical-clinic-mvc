@@ -1,5 +1,6 @@
 package com.mballem.curso.security.config;
 
+import com.mballem.curso.security.domain.PerfilTipo;
 import com.mballem.curso.security.service.UsuarioService;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,6 +12,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String ADMIN = PerfilTipo.ADMIN.getDesc();
+    private static final String MEDICO = PerfilTipo.MEDICO.getDesc();
+    private static final String PACIENTE = PerfilTipo.PACIENTE.getDesc();
+
     private final UsuarioService usuarioService;
 
     public SecurityConfig(UsuarioService usuarioService) {
@@ -21,15 +26,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
 
-                // paginas publicas
+                // acesso publico
                 .antMatchers("/webjars/**", "/css/**", "/js/**", "/image/**").permitAll()
                 .antMatchers("/", "/home").permitAll()
 
                 // acesso privado para admin
-                .antMatchers("/u/**").hasAuthority("ADMIN")
+                .antMatchers("/u/**", "/especialidades/**").hasAuthority(ADMIN)
 
                 // acesso privado para medico
-                .antMatchers("/medicos/**").hasAuthority("MEDICO")
+                .antMatchers("/medicos/**").hasAuthority(MEDICO)
+
+                // acesso privado para paciente
+                .antMatchers("/pacientes/**").hasAuthority(PACIENTE)
 
                 // outras paginas requerem autenticação
                 .anyRequest().authenticated()

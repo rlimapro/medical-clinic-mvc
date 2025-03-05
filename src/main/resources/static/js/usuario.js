@@ -50,4 +50,16 @@ $(document).ready(function() {
         ]
     });
 
+    // Criando URL para clique no botão de editar dados pessoais
+    $('#table-usuarios tbody').on('click', '[id*="dp_"]', function () {
+       var data = table.row($(this).parents('tr')).data();
+       var aux = new Array();
+
+       $.each(data.perfis, function (index, value) {
+          aux.push(value.id);
+       });
+
+       document.location.href = '/u/editar/dados/usuario/' + data.id + '/perfis/' + aux;
+    });
+
 });
