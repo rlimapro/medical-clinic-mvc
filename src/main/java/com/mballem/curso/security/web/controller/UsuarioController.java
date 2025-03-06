@@ -1,8 +1,10 @@
 package com.mballem.curso.security.web.controller;
 
+import com.mballem.curso.security.domain.Medico;
 import com.mballem.curso.security.domain.Perfil;
 import com.mballem.curso.security.domain.PerfilTipo;
 import com.mballem.curso.security.domain.Usuario;
+import com.mballem.curso.security.service.MedicoService;
 import com.mballem.curso.security.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,6 +27,8 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService service;
+    @Autowired
+    private MedicoService medicoService;
 
     // abrir cadastro de usuarios (medico/admin/paciente)
     @GetMapping("/novo/cadastro/usuario")
@@ -78,23 +82,19 @@ public class UsuarioController {
 
         Usuario usuario = service.buscarPorIdAndPerfis(usuarioId, perfisId);
 
-        if(
-            // Se for apenas ADMIN
-            usuario.getPerfis().contains(new Perfil(PerfilTipo.ADMIN.getCod())) &&
-            !usuario.getPerfis().contains(new Perfil(PerfilTipo.MEDICO.getCod()))
-        ) {
+        // Se for apenas ADMIN
+        if(usuario.getPerfis().contains(new Perfil(PerfilTipo.ADMIN.getCod())) && !usuario.getPerfis().contains(new Perfil(PerfilTipo.MEDICO.getCod()))) {
             return new ModelAndView("usuario/cadastro", "usuario", usuario);
         }
-        else if(
-            // Se for MEDICO
-            usuario.getPerfis().contains(new Perfil(PerfilTipo.MEDICO.getCod()))
-        ) {
-            return new ModelAndView("especialidade/especialidade");
+        // Se for MEDICO
+        else if(usuario.getPerfis().contains(new Perfil(PerfilTipo.MEDICO.getCod()))) {
+            Medico medico = medicoService.buscarPorUsuarioId(usuarioId);
+            return medico.hasNotId()
+                    ? new ModelAndView("medico/cadastro", "medico", new Medico(new Usuario(usuarioId)))
+                    : new ModelAndView("medico/cadastro", "medico", medico);
         }
-        else if(
-            // Se for PACIENTE
-            usuario.getPerfis().contains(new Perfil(PerfilTipo.PACIENTE.getCod()))
-        ) {
+        // Se for PACIENTE
+        else if(usuario.getPerfis().contains(new Perfil(PerfilTipo.PACIENTE.getCod()))) {
             ModelAndView model = new ModelAndView("error");
             model.addObject("status", 403);
             model.addObject("error", "Área restrita!");
