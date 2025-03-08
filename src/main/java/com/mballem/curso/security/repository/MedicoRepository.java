@@ -9,4 +9,7 @@ import java.util.Optional;
 public interface MedicoRepository extends JpaRepository<Medico, Long> {
     @Query("SELECT m FROM Medico m WHERE m.usuario.id = :id")
     Optional<Medico> findByUsuarioId(Long id);
+
+    @Query("SELECT m FROM Medico m WHERE m.usuario.email LIKE :email")
+    Optional<Medico> findByEmail(String email);
 }
