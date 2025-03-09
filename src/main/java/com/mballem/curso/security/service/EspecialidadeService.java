@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -42,5 +43,10 @@ public class EspecialidadeService {
     @Transactional(readOnly = false)
     public void remover(Long id) {
         repository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> buscarEspecialidadesPorTermo(String termo) {
+        return repository.findEspecialidadeByTermo(termo);
     }
 }
