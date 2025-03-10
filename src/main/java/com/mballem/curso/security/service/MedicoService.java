@@ -29,7 +29,7 @@ public class MedicoService {
         editedMedico.setDtInscricao(medico.getDtInscricao());
         editedMedico.setNome(medico.getNome());
         if(!medico.getEspecialidades().isEmpty()) {
-            editedMedico.setEspecialidades(medico.getEspecialidades());
+            editedMedico.getEspecialidades().addAll(medico.getEspecialidades());
         }
     }
 

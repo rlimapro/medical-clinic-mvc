@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class EspecialidadeService {
@@ -48,5 +50,9 @@ public class EspecialidadeService {
     @Transactional(readOnly = true)
     public List<String> buscarEspecialidadesPorTermo(String termo) {
         return repository.findEspecialidadeByTermo(termo);
+    }
+
+    public Set<Especialidade> buscarPorTitulo(String[] titulos) {
+        return repository.findByTitle(titulos);
     }
 }
