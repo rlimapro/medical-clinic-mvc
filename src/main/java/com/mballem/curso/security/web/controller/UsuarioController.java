@@ -9,11 +9,10 @@ import com.mballem.curso.security.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -29,6 +28,8 @@ public class UsuarioController {
     private UsuarioService service;
     @Autowired
     private MedicoService medicoService;
+    @Autowired
+    private UsuarioService usuarioService;
 
     // abrir cadastro de usuarios (medico/admin/paciente)
     @GetMapping("/novo/cadastro/usuario")
@@ -103,5 +104,32 @@ public class UsuarioController {
         }
 
         return new ModelAndView("redirect:/u/lista");
+    }
+
+    @GetMapping("/editar/senha")
+    public String abrirEditarSenha() {
+        return "usuario/editar-senha";
+    }
+
+    @PostMapping("/confirmar/senha")
+    public String editarSenha(@RequestParam("senha1") String s1,
+                              @RequestParam("senha2") String s2,
+                              @RequestParam("senha3") String s3,
+                              @AuthenticationPrincipal User user, RedirectAttributes attributes) {
+
+        if(!s1.equals(s2)) {
+            attributes.addFlashAttribute("falha", "Senhas são diferentes, tente novamente!");
+            return "redirect:/u/editar/senha";
+        }
+
+        Usuario u = service.buscarPorEmail(user.getUsername());
+        if(!usuarioService.isSenhaCorreta(s3, u.getSenha())) {
+            attributes.addFlashAttribute("falha", "Senha atual incorreta, tente novamente!");
+            return "redirect:/u/editar/senha";
+        }
+
+        usuarioService.alterarSenha(u, s1);
+        attributes.addFlashAttribute("sucesso", "Senha alterada com sucesso!");
+        return "redirect:/u/editar/senha";
     }
 }
