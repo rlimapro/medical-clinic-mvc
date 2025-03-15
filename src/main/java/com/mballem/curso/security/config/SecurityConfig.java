@@ -41,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/medicos/dados", "/medicos/salvar", "/medicos/editar").hasAnyAuthority(MEDICO, ADMIN)
 
                 // acesso privado para medico
+                .antMatchers("/medicos/especialidade/titulo/*").hasAuthority(PACIENTE)
                 .antMatchers("/medicos/**").hasAuthority(MEDICO)
 
                 // acesso privado para paciente
@@ -48,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // acessos privados especialidades
                 .antMatchers("/especialidades/datatables/server/medico/*").hasAnyAuthority(MEDICO, ADMIN)
-                .antMatchers("/especialidades/titulo").hasAnyAuthority(MEDICO, ADMIN)
+                .antMatchers("/especialidades/titulo").hasAnyAuthority(MEDICO, ADMIN, PACIENTE)
                 .antMatchers("/especialidades/**").hasAuthority(ADMIN)
 
                 // outras paginas requerem autenticação

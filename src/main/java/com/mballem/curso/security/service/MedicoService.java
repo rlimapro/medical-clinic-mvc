@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class MedicoService {
     @Autowired
@@ -42,5 +44,9 @@ public class MedicoService {
     public void excluirEspecialidadePorMedico(Long idMed, Long idEsp) {
         Medico medico = medicoRepository.findById(idMed).get();
         medico.getEspecialidades().removeIf(e -> e.getId().equals(idEsp));
+    }
+
+    public List<Medico> buscarMedicosPorEspecialidades(String titulo) {
+        return medicoRepository.findMedicosByEspecialidades(titulo);
     }
 }

@@ -5,6 +5,7 @@ import com.mballem.curso.security.domain.Usuario;
 import com.mballem.curso.security.service.MedicoService;
 import com.mballem.curso.security.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -62,5 +63,10 @@ public class MedicoController {
         medicoService.excluirEspecialidadePorMedico(idMed, idEsp);
         attributes.addFlashAttribute("sucesso", "Especialidade removida com sucesso!");
         return "redirect:/medicos/dados";
+    }
+
+    @GetMapping("/especialidade/titulo/{titulo}")
+    public ResponseEntity<?> getMedicosPorEspecialidades(@PathVariable("titulo") String titulo) {
+        return ResponseEntity.ok(medicoService.buscarMedicosPorEspecialidades(titulo));
     }
 }
