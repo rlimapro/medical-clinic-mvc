@@ -1,5 +1,6 @@
 package com.mballem.curso.security.web.controller;
 
+import com.mballem.curso.security.domain.Agendamento;
 import com.mballem.curso.security.domain.Horario;
 import com.mballem.curso.security.repository.AgendamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +19,10 @@ public class AgendamentoService {
     @Transactional(readOnly = true)
     public List<Horario> buscarHorariosDisponiveisPorMedicoAndData(Long id, LocalDate data) {
         return repository.findMedicoAndDataByHorarioDisponivel(id, data);
+    }
+
+    @Transactional(readOnly = false)
+    public void salvar(Agendamento agendamento) {
+        repository.save(agendamento);
     }
 }

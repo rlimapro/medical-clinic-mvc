@@ -64,4 +64,8 @@ public class EspecialidadeService {
         Page<Especialidade> page = repository.findSpecialtiesByDoctorId(id, datatable.getPageable());
         return datatable.getResponse(page);
     }
+
+    public Especialidade buscarEspecialidadePorTitulo(String titulo) {
+        return repository.findByTitulo(titulo);
+    }
 }

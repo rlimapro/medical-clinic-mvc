@@ -23,4 +23,8 @@ public interface EspecialidadeRepository extends JpaRepository<Especialidade, Lo
             "JOIN e.medicos m " +
             "WHERE m.id = :id")
     Page<Especialidade> findSpecialtiesByDoctorId(Long id, Pageable pageable);
+
+    @Query("SELECT e FROM Especialidade e " +
+            "WHERE e.titulo LIKE :titulo")
+    Especialidade findByTitulo(String titulo);
 }
