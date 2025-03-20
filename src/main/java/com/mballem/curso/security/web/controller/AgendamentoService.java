@@ -49,4 +49,8 @@ public class AgendamentoService {
         Page<HistorioPaciente> page = repository.findByHistoricoMedicoEmail(email, datatable.getPageable());
         return datatable.getResponse(page);
     }
+
+    public Agendamento buscarPorId(Long id) {
+        return repository.findById(id).get();
+    }
 }
