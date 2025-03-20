@@ -50,7 +50,17 @@ public class AgendamentoService {
         return datatable.getResponse(page);
     }
 
+    @Transactional(readOnly = true)
     public Agendamento buscarPorId(Long id) {
         return repository.findById(id).get();
+    }
+
+    @Transactional(readOnly = false)
+    public void editar(Agendamento agendamento, String username) {
+        Agendamento editedAgendamento = repository.findById(agendamento.getId()).get();
+        editedAgendamento.setEspecialidade(agendamento.getEspecialidade());
+        editedAgendamento.setMedico(agendamento.getMedico());
+        editedAgendamento.setHorario(agendamento.getHorario());
+        editedAgendamento.setDataConsulta(agendamento.getDataConsulta());
     }
 }

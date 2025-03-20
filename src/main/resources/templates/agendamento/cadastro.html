@@ -26,8 +26,8 @@
 					
 						<div th:replace="fragments/alert :: alerta-sucesso"></div>
 												
-						<form th:action="@{/agendamentos/salvar}" th:object="${agendamento}"
-							method="POST" class="was-validated">
+						<form th:action="${agendamento.id == null} ? @{/agendamentos/salvar} : @{/agendamentos/editar}"
+							  th:object="${agendamento}" method="POST" class="was-validated">
 							
 							<div class="form-row">
 								<div class="form-group col-md-12">

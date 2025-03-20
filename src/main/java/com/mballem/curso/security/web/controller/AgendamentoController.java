@@ -93,4 +93,18 @@ public class AgendamentoController {
         model.addAttribute("agendamento", agendamento);
         return "agendamento/cadastro";
     }
+
+    @PostMapping("/editar")
+    public String editarConsulta(Agendamento agendamento,
+                                 RedirectAttributes attributes,
+                                 @AuthenticationPrincipal User user) {
+
+        String especialidadeTitulo = agendamento.getEspecialidade().getTitulo();
+        Especialidade especialidade = especialidadeService.buscarEspecialidadePorTitulo(especialidadeTitulo);
+        agendamento.setEspecialidade(especialidade);
+
+        service.editar(agendamento, user.getUsername());
+        attributes.addFlashAttribute("sucesso", "Sua consulta foi alterada com sucesso");
+        return "redirect:/agendamentos/agendar";
+    }
 }
