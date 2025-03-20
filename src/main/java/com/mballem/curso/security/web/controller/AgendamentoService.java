@@ -4,6 +4,7 @@ import com.mballem.curso.security.datatables.Datatables;
 import com.mballem.curso.security.datatables.DatatablesColunas;
 import com.mballem.curso.security.domain.Agendamento;
 import com.mballem.curso.security.domain.Horario;
+import com.mballem.curso.security.exception.AcessoNegadoException;
 import com.mballem.curso.security.repository.AgendamentoRepository;
 import com.mballem.curso.security.repository.projection.HistorioPaciente;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,5 +63,11 @@ public class AgendamentoService {
         editedAgendamento.setMedico(agendamento.getMedico());
         editedAgendamento.setHorario(agendamento.getHorario());
         editedAgendamento.setDataConsulta(agendamento.getDataConsulta());
+    }
+
+    @Transactional(readOnly = true)
+    public Agendamento buscarPorIdAndUsuario(Long id, String email) {
+        return repository.findByIdAndPacienteOrMedicoEmail(id, email)
+                .orElseThrow(() -> new AcessoNegadoException("Acesso negado ao usuário: " + email));
     }
 }

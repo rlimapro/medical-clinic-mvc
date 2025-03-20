@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> {
 
@@ -43,4 +44,11 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
             "FROM Agendamento a " +
             "WHERE a.medico.usuario.email LIKE :email")
     Page<HistorioPaciente> findByHistoricoMedicoEmail(String email, Pageable pageable);
+
+    @Query("SELECT a FROM Agendamento a " +
+            "WHERE " +
+            "(a.id = :id AND a.paciente.usuario.email LIKE :email) " +
+            "OR " +
+            "(a.id = :id AND a.medico.usuario.email LIKE :email)")
+    Optional<Agendamento> findByIdAndPacienteOrMedicoEmail(Long id, String email);
 }

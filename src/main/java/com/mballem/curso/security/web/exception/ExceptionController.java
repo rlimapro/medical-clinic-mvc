@@ -1,5 +1,6 @@
-package com.mballem.curso.security.exception;
+package com.mballem.curso.security.web.exception;
 
+import com.mballem.curso.security.exception.AcessoNegadoException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +13,15 @@ public class ExceptionController {
     public ModelAndView usuarioNaoEncontradoException(UsernameNotFoundException e) {
         ModelAndView model = new ModelAndView("error");
         model.addObject("status", 404);
+        model.addObject("error", "Não foi possível realizar esta operação.");
+        model.addObject("message", e.getMessage());
+        return model;
+    }
+
+    @ExceptionHandler(AcessoNegadoException.class)
+    public ModelAndView acessoNegadoException(AcessoNegadoException e) {
+        ModelAndView model = new ModelAndView("error");
+        model.addObject("status", 403);
         model.addObject("error", "Não foi possível realizar esta operação.");
         model.addObject("message", e.getMessage());
         return model;
