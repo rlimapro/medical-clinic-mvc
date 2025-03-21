@@ -46,7 +46,13 @@ public class MedicoService {
         medico.getEspecialidades().removeIf(e -> e.getId().equals(idEsp));
     }
 
+    @Transactional(readOnly = true)
     public List<Medico> buscarMedicosPorEspecialidades(String titulo) {
         return medicoRepository.findMedicosByEspecialidades(titulo);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean existeEspecialidadeAgendada(Long idEsp, Long idMed) {
+        return medicoRepository.hasEspecialidadeAgendadada(idEsp, idMed).isPresent();
     }
 }
