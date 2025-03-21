@@ -70,4 +70,9 @@ public class AgendamentoService {
         return repository.findByIdAndPacienteOrMedicoEmail(id, email)
                 .orElseThrow(() -> new AcessoNegadoException("Acesso negado ao usuário: " + email));
     }
+
+    @Transactional(readOnly = false)
+    public void remover(Long id) {
+        repository.deleteById(id);
+    }
 }

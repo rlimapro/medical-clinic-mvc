@@ -107,4 +107,11 @@ public class AgendamentoController {
         attributes.addFlashAttribute("sucesso", "Sua consulta foi alterada com sucesso");
         return "redirect:/agendamentos/agendar";
     }
+
+    @GetMapping("/excluir/consulta/{id}")
+    public String excluirConsulta(@PathVariable("id") Long id, RedirectAttributes attributes) {
+        service.remover(id);
+        attributes.addFlashAttribute("sucesso", "Consulta removida com sucesso!");
+        return "redirect:/agendamentos/historico/paciente";
+    }
 }
