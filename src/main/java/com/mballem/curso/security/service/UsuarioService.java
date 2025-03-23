@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UsuarioService implements UserDetailsService {
@@ -37,7 +38,8 @@ public class UsuarioService implements UserDetailsService {
 
     @Override @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        Usuario usuario = buscarPorEmail(userName);
+        Usuario usuario = buscarPorEmailAtivo(userName).orElseThrow(
+                () -> new UsernameNotFoundException("Usuário " + userName + " não foi encontrado!"));
         return new User(
                 usuario.getEmail(),
                 usuario.getSenha(),
@@ -96,5 +98,10 @@ public class UsuarioService implements UserDetailsService {
         usuario.setSenha(crypt);
         usuario.addPerfil(PerfilTipo.PACIENTE);
         repository.save(usuario);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Usuario> buscarPorEmailAtivo(String email) {
+        return repository.findByEmailAndAtivo(email);
     }
 }
