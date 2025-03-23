@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    open-in-view: true
+  thymeleaf:
+    cache: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${SMTP_EMAIL}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+      test-connection: true
