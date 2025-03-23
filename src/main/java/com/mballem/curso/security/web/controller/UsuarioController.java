@@ -4,6 +4,7 @@ import com.mballem.curso.security.domain.Medico;
 import com.mballem.curso.security.domain.Perfil;
 import com.mballem.curso.security.domain.PerfilTipo;
 import com.mballem.curso.security.domain.Usuario;
+import com.mballem.curso.security.service.EmailService;
 import com.mballem.curso.security.service.MedicoService;
 import com.mballem.curso.security.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +33,8 @@ public class UsuarioController {
     private MedicoService medicoService;
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private EmailService emailService;
 
     // abrir cadastro de usuarios (medico/admin/paciente)
     @GetMapping("/novo/cadastro/usuario")
@@ -151,10 +155,24 @@ public class UsuarioController {
     public String salvarCadastroPaciente(Usuario usuario, BindingResult result) {
         try {
             service.salvarCadastroPaciente(usuario);
-        } catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException | MessagingException e) {
             result.reject("email", "Ops... Este e-mail já está sendo utilizado por alguém!");
             return "cadastrar-se";
         }
         return "redirect:/u/cadastro/realizado";
+    }
+
+    // Recebe a requisição de confirmação do cadastro
+    @GetMapping("/confirmacao/cadastro")
+    public String respostaConfirmacaoCadastroPaciente(@RequestParam("codigo") String codigo,
+                                                      RedirectAttributes attributes) {
+
+        service.ativarCadastroPaciente(codigo);
+        attributes.addFlashAttribute("alerta", "sucesso");
+        attributes.addFlashAttribute("titulo", "Cadastro ativado.");
+        attributes.addFlashAttribute("texto", "Parabéns, seu cadastro já está ativo!");
+        attributes.addFlashAttribute("subtexto", "Prossiga realizando o login abaixo:");
+
+        return "redirect:/login";
     }
 }

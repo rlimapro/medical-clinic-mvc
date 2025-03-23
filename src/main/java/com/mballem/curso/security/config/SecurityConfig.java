@@ -1,6 +1,5 @@
 package com.mballem.curso.security.config;
 
-import com.mballem.curso.security.domain.Paciente;
 import com.mballem.curso.security.domain.PerfilTipo;
 import com.mballem.curso.security.service.UsuarioService;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -33,6 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/webjars/**", "/css/**", "/js/**", "/image/**").permitAll()
                 .antMatchers("/", "/home").permitAll()
                 .antMatchers("/u/novo/cadastro", "/u/cadastro/realizado", "/u/cadastro/paciente/salvar").permitAll()
+                .antMatchers("/u/confirmacao/cadastro").permitAll()
 
                 // acesso privado edicao de senha
                 .antMatchers("/u/editar/senha", "/u/confirmar/senha").hasAnyAuthority(MEDICO, PACIENTE)
