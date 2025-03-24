@@ -7,6 +7,7 @@ import com.mballem.curso.security.domain.PerfilTipo;
 import com.mballem.curso.security.domain.Usuario;
 import com.mballem.curso.security.exception.AcessoNegadoException;
 import com.mballem.curso.security.repository.UsuarioRepository;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -127,4 +128,13 @@ public class UsuarioService implements UserDetailsService {
         repository.save(usuario);
     }
 
+    @Transactional(readOnly = false)
+    public void pedidoRedefinicaoSenha(String email) throws MessagingException {
+        Usuario usuario = buscarPorEmailAtivo(email).orElseThrow(
+                () -> new UsernameNotFoundException("Usuário " + email + " não foi encontrado!"));
+
+        String verificador = RandomStringUtils.randomAlphanumeric(6);
+        usuario.setCodigoVerificador(verificador);
+        emailService.enviarPedidoRedefinicaoSenha(email, verificador);
+    }
 }

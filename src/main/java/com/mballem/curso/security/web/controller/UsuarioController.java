@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -174,5 +175,36 @@ public class UsuarioController {
         attributes.addFlashAttribute("subtexto", "Prossiga realizando o login abaixo:");
 
         return "redirect:/login";
+    }
+
+    // Abrir página de recuperação de senha
+    @GetMapping("/p/redefinir/senha")
+    public String pedidoRedefinirSenha() {
+        return "usuario/pedido-recuperar-senha";
+    }
+
+    // Formulario de recuperação de senha
+    @GetMapping("/p/recuperar/senha")
+    public String redefinirSenha(String email, ModelMap model) throws MessagingException {
+        service.pedidoRedefinicaoSenha(email);
+        model.addAttribute("sucesso", "Em instantes você receberá um e-mail para prosseguir com a redefinição de sua senha.");
+        model.addAttribute("usuario", new Usuario(email));
+        return "usuario/recuperar-senha";
+    }
+
+    // Salvar nova senha
+    @PostMapping("/p/nova/senha")
+    public String confirmacaoDeRedefinicaoDeSenha(Usuario usuario, ModelMap model) {
+        Usuario u = service.buscarPorEmail(usuario.getEmail());
+        if(!u.getCodigoVerificador().equals(usuario.getCodigoVerificador())) {
+            model.addAttribute("falha", "Código verificador está incorreto!");
+            return "usuario/recuperar-senha";
+        }
+        u.setCodigoVerificador(null);
+        service.alterarSenha(u, usuario.getSenha());
+        model.addAttribute("alerta", "sucesso");
+        model.addAttribute("titulo", "Senha redefinida!");
+        model.addAttribute("texto", "Você já pode logar no sistema com a nova senha.");
+        return "login";
     }
 }
