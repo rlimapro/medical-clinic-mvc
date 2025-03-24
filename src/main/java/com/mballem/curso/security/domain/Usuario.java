@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "usuarios", indexes = {@Index(name = "idx_usuario_email", columnList = "email")})
+@Table(name = "usuarios")
 public class Usuario extends AbstractEntity {	
 	
 	@Column(name = "email", unique = true, nullable = false)

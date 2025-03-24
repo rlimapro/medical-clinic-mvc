@@ -1,0 +1,61 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: demo_security_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - demo_network
+    command: --default-authentication-plugin=mysql_native_password
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: demo_security_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "8081:80"
+    networks:
+      - demo_network
+    depends_on:
+      - mysql
+
+  app:
+    build: .
+    container_name: demo_security_app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      # Database
+      DB_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?useTimezone=true&serverTimezone=America/Sao_Paulo&useSSL=false
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      # Email
+      SMTP_EMAIL: ${SMTP_EMAIL}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+    depends_on:
+      - mysql
+    networks:
+      - demo_network
+    volumes:
+      - ./logs:/app/logs
+
+volumes:
+  mysql_data:
+
+networks:
+  demo_network:
+    driver: bridge

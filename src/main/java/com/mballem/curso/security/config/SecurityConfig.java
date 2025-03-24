@@ -75,7 +75,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // acesso negado
                 .and()
                 .exceptionHandling()
-                .accessDeniedPage("/acesso-negado");
+                .accessDeniedPage("/acesso-negado")
+
+                // lembre-se de mim
+                .and()
+                .rememberMe();
     }
 
     @Override
